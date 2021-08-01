@@ -1,9 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './JoysongApp.module.scss';
 
 const BASE_API_URL = process.env.REACT_APP_BASE_API_URL;
 
 const JoysongApp = () => {
+  const audioRef = useRef(null);
   const inputRef = useRef(null);
   const [audioUrl, setAudioUrl] = useState(null);
   const [lyrics, setLyrics] = useState(null);
@@ -18,6 +19,13 @@ const JoysongApp = () => {
     setLyrics(lyricsText);
   };
 
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.load();
+      audioRef.current.play();
+    }
+  }, [audioUrl]);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -27,7 +35,7 @@ const JoysongApp = () => {
         </div>
         {!!audioUrl && (
           <div className={styles.audio}>
-            <audio controls autoPlay>
+            <audio ref={audioRef} controls>
               <source src={audioUrl} type="audio/ogg" />
             </audio>
           </div>
